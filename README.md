@@ -19,5 +19,6 @@ pvesm add dir raid0 --path /mnt/raid0
 
 mdadm --detail --scan
 mdadm --stop /dev/md/raid:0
+
 mdadm --zero-superblock /dev/sdX1   # Replace /dev/sdX1 with the appropriate disk names
 mdadm --zero-superblock /dev/sdY1
