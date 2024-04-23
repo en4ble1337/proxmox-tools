@@ -13,3 +13,11 @@ mkdir /mnt/raid0
 mount /dev/md0 /mnt/raid0
 
 pvesm add dir raid0 --path /mnt/raid0
+
+
+#unmounting raid
+
+mdadm --detail --scan
+mdadm --stop /dev/md/raid:0
+mdadm --zero-superblock /dev/sdX1   # Replace /dev/sdX1 with the appropriate disk names
+mdadm --zero-superblock /dev/sdY1
