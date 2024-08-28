@@ -1,7 +1,12 @@
 # Proxmox Tool Kit of usefull tricks
 ### Create raid0
 
-```lsblk zpool create -f -o ashift=12 <pool> <device1> <device2>```
+`
+#check which drives you want to combine (min 2)
+lsblk zpool
+
+#name the <pool> and pick your drives as <device1-2>
+create -f -o ashift=12 <pool> <device1> <device2>`
 
 go to data center > storage > add > zfs > pick new raid > mark "thin" > create
 
