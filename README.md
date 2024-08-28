@@ -1,4 +1,4 @@
-# Repo for Proxmox Tools
+# Repository for Proxmox Tools
 
 ### Create raid0
 
@@ -22,4 +22,14 @@ https://pve.proxmox.com/wiki/ZFS_on_Linux
 
 ---
 
+### Disable Cluster Services
+Disabling cluster services in Proxmox VE can be beneficial in  lowering cpu and memory consumption which improves performance of the system (with unnecessary overhead).
 
+```
+systemctl disable -q --now pve-ha-lrm
+systemctl disable -q --now pve-ha-crm
+systemctl disable -q --now corosync
+```
+
+
+---
