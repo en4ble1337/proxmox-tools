@@ -6,7 +6,7 @@
 **#check which drives you want to combine (min 2)<br/>**
 
 ```
-lsblk zpool
+lsblk
 ```
 
 **#name the <pool> and pick your drives as <device1-2><br/>**
