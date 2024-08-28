@@ -1,6 +1,6 @@
 # Repository for Proxmox Tools
 
-### Create raid0
+# Create raid0
 
 
 **#check which drives you want to combine (min 2)<br/>**
@@ -22,7 +22,7 @@ https://pve.proxmox.com/wiki/ZFS_on_Linux
 
 ---
 
-### Disable Cluster Services
+# Disable Cluster Services
 Disabling cluster services in Proxmox VE can be beneficial in  lowering cpu and memory consumption which improves performance of the system (with unnecessary overhead).
 
 ```
@@ -34,7 +34,7 @@ systemctl disable -q --now corosync
 
 ---
 
-### Disable atime on both zfs and other systems:
+# Disable atime on both zfs and other systems:
 Disabling atime (access time) updates on filesystems can provide several benefits, especially in environments like Proxmox where performance and efficiency are critical. </br>
 - reduce disk i/o
 - extending disk lifespan
@@ -69,7 +69,7 @@ mount | grep ' / '
 
 
 
-### Proxmox VE Post Install
+# Proxmox VE Post Install
 This script provides options for managing Proxmox VE repositories, including disabling the Enterprise Repo, adding or correcting PVE sources, enabling the No-Subscription Repo, adding the test Repo, disabling the subscription nag, updating Proxmox VE, and rebooting the system.
 
 Run the command below in the Proxmox VE Shell. Credits: https://tteck.github.io/Proxmox/#proxmox-ve-post-install
@@ -81,7 +81,7 @@ bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/misc/post-pve-i
 
 ---
 
-### LXC Containers Trim Cronjob
+# LXC Containers Trim Cronjob
 A feature that enables the operating system to notify storage which data blocks are no longer needed and can be erased or marked as free for rewriting. 
 
 Runs everyweek and cleans up LXC containers.
