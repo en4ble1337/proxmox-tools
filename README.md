@@ -9,7 +9,7 @@
 lsblk
 ```
 
-**#name the <pool> and pick your drives as <device1-2><br/>**
+**#name the pool and pick your drives as device1-2<br/>**
 
 ```
 create -f -o ashift=12 <pool> <device1> <device2>
@@ -31,5 +31,38 @@ systemctl disable -q --now pve-ha-crm
 systemctl disable -q --now corosync
 ```
 
+
+---
+
+### Disable atime on both zfs and other systems:
+Disabling atime (access time) updates on filesystems can provide several benefits, especially in environments like Proxmox where performance and efficiency are critical. </br>
+- reduce disk i/o
+- extending disk lifespan
+- cpu overhead leading to higher performance
+
+**#non zfs filesystem**
+```	
+mount | grep "atime"
+mount | grep ' / '
+```
+**#access fstab and add noatime to pve root**
+
+```
+nano /etc/fstab
+```
+```
+/dev/pve/root / ext4 errors=remount-ro,noatime 0 1
+```
+#reload services 
+
+```
+systemctl daemon-reload
+mount -o remount,noatime /
+```
+#verify if applied
+
+```
+mount | grep ' / '
+```
 
 ---
