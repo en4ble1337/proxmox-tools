@@ -67,16 +67,6 @@ mount | grep ' / '
 
 ---
 
-### Disable Cluster Services
-Disabling cluster services in Proxmox VE can be beneficial in  lowering cpu and memory consumption which improves performance of the system (with unnecessary overhead).
-
-```
-systemctl disable -q --now pve-ha-lrm
-systemctl disable -q --now pve-ha-crm
-systemctl disable -q --now corosync
-```
-
-
 ---
 
 ### Proxmox VE Post Install
@@ -90,3 +80,12 @@ bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/misc/post-pve-i
 
 
 ---
+
+
+### LXC Containers Trim Cronjob
+Runs everyweek and cleans up containers.
+
+```
+codeHere
+```
+
