@@ -1,8 +1,7 @@
 # Proxmox Tool Kit of usefull tricks
-### raid0
+### Create raid0
 
-lsblk
-zpool create -f -o ashift=12 <pool> <device1> <device2>
+```lsblk zpool create -f -o ashift=12 <pool> <device1> <device2>```
 
 go to data center > storage > add > zfs > pick new raid > mark "thin" > create
 
