@@ -1,4 +1,13 @@
-# proxmox-tools
+# raid0
+
+lsblk
+zpool create -f -o ashift=12 <pool> <device1> <device2>
+
+go to data center > storage > add > zfs > pick new raid > mark "thin" > create
+
+reference:
+https://pve.proxmox.com/wiki/ZFS_on_Linux
+
 
 raid0 proxmox cli
 
