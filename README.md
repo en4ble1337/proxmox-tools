@@ -67,7 +67,7 @@ mount | grep ' / '
 
 ---
 
----
+
 
 ### Proxmox VE Post Install
 This script provides options for managing Proxmox VE repositories, including disabling the Enterprise Repo, adding or correcting PVE sources, enabling the No-Subscription Repo, adding the test Repo, disabling the subscription nag, updating Proxmox VE, and rebooting the system.
@@ -81,11 +81,15 @@ bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/misc/post-pve-i
 
 ---
 
-
 ### LXC Containers Trim Cronjob
-Runs everyweek and cleans up containers.
+A feature that enables the operating system to notify storage which data blocks are no longer needed and can be erased or marked as free for rewriting. 
+
+Runs everyweek and cleans up LXC containers.
 
 ```
-codeHere
+nano diskcleanup.sh
 ```
+
+
+---
 
