@@ -87,7 +87,7 @@ A feature that enables the operating system to notify storage which data blocks 
 Runs everyweek and cleans up LXC containers.
 
 ```
-nano diskcleanup.sh
+wget https://raw.githubusercontent.com/en4ble1337/proxmox-tools/main/lxc-trim-prox.sh && chmod 777 lxc-trim-prox.sh && (crontab -l ; echo "0 0 * * 3 /home/$USER/lxc-trim-prox.sh") | crontab -
 ```
 
 
