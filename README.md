@@ -65,6 +65,29 @@ mount -o remount,noatime /
 mount | grep ' / '
 ```
 
+#zfs filesystem approach. find the list of mountpoints
+
+```
+zfs list
+```
+
+#modify all mountpoints with a flag set atime=off i.e for the list from above:
+
+```
+zfs set atime=off rpool            
+zfs set atime=off rpool/ROOT       
+zfs set atime=off rpool/ROOT/pve-1 
+zfs set atime=off rpool/data       
+zfs set atime=off rpool/var-lib-vz 
+```
+
+#verify changes, should be none
+
+```
+zfs get atime
+```
+
+
 ---
 
 
