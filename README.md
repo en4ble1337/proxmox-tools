@@ -12,7 +12,7 @@ lsblk
 **#name the pool and pick your drives as device1-2<br/>**
 
 ```
-create -f -o ashift=12 <pool> <device1> <device2>
+zpool create -f -o ashift=12 <pool> <device1> <device2>
 ```
 
 **#go to data center > storage > add > zfs > pick new raid name <pool> > select "thin prvisioning" > add**
