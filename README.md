@@ -2,6 +2,21 @@
 
 A comprehensive collection of scripts and configurations for optimizing Proxmox Virtual Environment (VE) installations. This repository provides essential tools for storage management, performance optimization, and system maintenance to help you get the most out of your Proxmox deployment.
 
+## 📋 Table of Contents
+
+1. [Features](#-features)
+2. [Create RAID0 Storage Pool](#-create-raid0-storage-pool)
+3. [Optimize Performance by Disabling Cluster Services](#-optimize-performance-by-disabling-cluster-services)
+4. [Disable Access Time Updates (atime)](#-disable-access-time-updates-atime)
+   - [For Non-ZFS Filesystems](#for-non-zfs-filesystems)
+   - [For ZFS Filesystems](#for-zfs-filesystems)
+5. [Proxmox VE Post-Installation Script](#️-proxmox-ve-post-installation-script)
+6. [Automated LXC Container Maintenance](#-automated-lxc-container-maintenance)
+7. [Quick Start Guide](#-quick-start-guide)
+8. [Important Notes](#️-important-notes)
+9. [Contributing](#-contributing)
+10. [License](#-license)
+
 ## 🚀 Features
 
 - **Storage Management**: Easy RAID0 setup with ZFS pools
