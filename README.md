@@ -148,7 +148,7 @@ This comprehensive script automates common post-installation tasks for Proxmox V
 **Credits:** [Community Scripts Project](https://community-scripts.github.io/ProxmoxVE/)
 
 ```
-bash -c "$(wget -qLO - https://github.com/community-scripts/ProxmoxVE/raw/main/misc/post-pve-install.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/tools/pve/post-pve-install.sh)"
 ```
 
 ---
