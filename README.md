@@ -165,7 +165,7 @@ The TRIM feature enables efficient storage management by informing the underlyin
 
 **Install and configure the automated TRIM cronjob:**
 ```
-wget https://raw.githubusercontent.com/en4ble1337/proxmox-tools/main/lxc-trim-prox.sh && chmod 777 lxc-trim-prox.sh && (crontab -l ; echo "0 0 * *3 /root/lxc-trim-prox.sh") | crontab -
+wget https://raw.githubusercontent.com/en4ble1337/proxmox-tools/main/lxc-trim-prox.sh && chmod 777 lxc-trim-prox.sh && (crontab -l ; echo "0 0 * * 3 /root/lxc-trim-prox.sh") | crontab -
 ```
 
 **Verify the cronjob installation:**
