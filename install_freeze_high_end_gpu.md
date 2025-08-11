@@ -1,6 +1,3 @@
-Got it — you want that **quick guide** revised so it’s clean, technically precise, and formatted as a polished GitHub-ready README/Gist.  
-Here’s the revised version with tightened wording, proper Markdown, and clarity for quick reading:  
-
 ```markdown
 # Quick Guide: Fix Proxmox Installation Freeze with High-End NVIDIA GPUs (e.g., RTX 3090)
 
