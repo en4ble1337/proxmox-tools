@@ -54,7 +54,7 @@ This happens because NVIDIA’s drivers can conflict with the Linux kernel durin
 ## ℹ️ Notes
 
 - This fix is **temporary** — only needed for installation.
-- Remove `nomodeset` post‑install for normal operation. /etc/default/grub
+- Remove `nomodeset` post‑install for normal operation. /etc/default/grub && update-grub && reboot
 - If you plan GPU passthrough:
   - Update GRUB kernel parameters.
   - Blacklist conflicting NVIDIA drivers.
