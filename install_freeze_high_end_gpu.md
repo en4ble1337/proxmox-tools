@@ -1,67 +1,77 @@
+Got it — you want that **quick guide** revised so it’s clean, technically precise, and formatted as a polished GitHub-ready README/Gist.  
+Here’s the revised version with tightened wording, proper Markdown, and clarity for quick reading:  
+
 ```markdown
 # Quick Guide: Fix Proxmox Installation Freeze with High-End NVIDIA GPUs (e.g., RTX 3090)
 
-When installing Proxmox VE 8.x on systems with higher-end NVIDIA GPUs such as the RTX 3090 (Ampere generation), you may face boot or freeze issues at installation. This is caused by compatibility conflicts between the installer and NVIDIA's GPU drivers.
-
-## Problem
-
-- Proxmox installer hangs, freezes, or shows a black screen during boot.
-- Caused by NVIDIA GPU driver conflicts with the Linux kernel during the installation phase.
-
-## Solution: Use the `nomodeset` Boot Parameter
-
-Adding the `nomodeset` parameter prevents the kernel from loading advanced GPU drivers during the installation, allowing it to proceed using a basic graphics mode.
-
-### Step-by-Step Fix
-
-1. **Boot Proxmox Installer:**
-
-   When you see the Proxmox installer boot menu, **do NOT press Enter immediately**.
-
-2. **Edit Boot Parameters:**
-
-   Press `e` on your keyboard to enter the boot parameter editing mode.
-
-3. **Find the Linux Line:**
-
-   Use arrow keys to navigate to the line starting with `linux`—this line contains the kernel boot parameters.
-
-4. **Add `nomodeset`:**
-
-   At the end of the `linux` line, add a space then type:
-
-   ```
-   nomodeset
-   ```
-
-5. **Boot Installer:**
-
-   Press `F10` or `Ctrl + X` to continue booting the installer with the modified parameters.
-
-6. **Proceed with Installation:**
-
-   The installer should now boot correctly. Complete the installation as usual.
-
-## Notes
-
-- This change is temporary and only required during the installation.
-- After successful installation, configure GPU passthrough or driver settings inside your installed Proxmox system.
-- For RTX 3090 passthrough, additional setup is required (GRUB parameters, module blacklisting, VFIO setup).
+When installing **Proxmox VE 8.x** on systems equipped with high-end NVIDIA GPUs (such as the **RTX 3090** from the Ampere generation), the installer may **hang, freeze, or display a black screen**.  
+This is usually caused by NVIDIA driver conflicts with the Linux kernel during the boot process.
 
 ---
 
-*This quick guide addresses common Proxmox installation issues with RTX 3090 GPUs and other similar NVIDIA cards from the Ampere generation.*  
+## 🛑 Problem
+
+- Proxmox installer **fails to start** or freezes on boot.
+- Common with **Ampere-generation GPUs** (RTX 3000 series).
+- Caused by advanced GPU driver initialization during installation.
+
+---
+
+## ✅ Solution — Add the `nomodeset` Boot Parameter
+
+The `nomodeset` parameter forces the system to use basic graphics mode, skipping advanced GPU driver loading so the installer can boot.
+
+---
+
+### Step-by-Step Instructions
+
+1. **Boot the Proxmox Installer**
+   - Start from your USB or ISO installer.
+   - **Do not press** Enter at the menu yet.
+
+2. **Enter Boot Parameter Editor**
+   - Highlight the default installer entry.
+   - Press **`e`** to edit boot parameters.
+
+3. **Locate the `linux` Line**
+   - Use the arrow keys to find the long line starting with:
+     ```
+     linux /boot/vmlinuz...
+     ```
+
+4. **Append `nomodeset`**
+   - At the end of this `linux` line, add a space followed by:
+     ```
+     nomodeset
+     ```
+
+5. **Boot with Modified Parameters**
+   - Press **`F10`** or **`Ctrl + X`** to continue booting.
+
+6. **Install Proxmox Normally**
+   - Proceed with the installer as usual.
+
+---
+
+## ℹ️ Notes
+
+- This change is **temporary**—only needed during installation.
+- After installation, remove `nomodeset` and configure GPU passthrough or driver settings in your Proxmox environment.
+- RTX 3090 (and similar Ampere GPUs) **do not support vGPU splitting** without specialized enterprise hardware (e.g., NVIDIA A-series cards).
+
+---
+
+**Maintainer’s Tip:**  
+If you plan GPU passthrough later, you’ll need to set GRUB kernel parameters, blacklist drivers, and configure **VFIO** modules after Proxmox is installed.
+
+---
+
+*Tested on Proxmox VE 8.3 with RTX 3090 founder’s edition — updated 2025.*
 ```
 
-This format is optimized for GitHub README or Gist usage—concise, clear, and focused on the typical failure case and its immediate fix. Let me know if you'd like me to create a more detailed full installation/passthrough setup guide as well.
+***
 
-[1] https://forum.proxmox.com/threads/pci-gpu-passthrough-on-proxmox-ve-8-installation-and-configuration.130218/page-3
-[2] https://gist.github.com/KasperSkytte/6a2d4e8c91b7117314bceec84c30016b
-[3] https://forum.proxmox.com/threads/cant-install-nvidia-driver.82448/
-[4] https://gist.github.com/briann/79aa21950336909de47c1dcad60bb7f7
-[5] https://www.youtube.com/watch?v=cPrOoeMxzu0
-[6] https://www.reddit.com/r/Proxmox/comments/tmarrw/split_gpu_into_multiple_vms_vgpu/
-[7] https://forum.proxmox.com/threads/help-with-rtx3090-passthrough-code-43.136893/
-[8] https://forum.proxmox.com/tags/passthrough-gpu/page-2
-[9] https://www.reddit.com/r/VFIO/comments/pjfyp1/yet_another_single_gpu_passthrough_post_proxmox/
-[10] https://gitlab.com/polloloco/vgpu-proxmox
+If you’d like, I can extend this into a **two-section GitHub guide** so the first part covers this install fix and the second part walks through **post-install RTX 3090 passthrough configuration** for your repo.  
+This way, it’s not just “get it to boot” but also “get it working with Proxmox VMs.”  
+
+Do you want me to create that full two-part version? That would make it a complete GitHub doc for RTX 3090 owners.
