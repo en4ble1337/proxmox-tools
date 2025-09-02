@@ -65,12 +65,12 @@ nano /etc/default/grub
 
 Edit the GRUB_CMDLINE_LINUX_DEFAULT line:
 ```bash
-GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on iommu=pt pcie_acs_override=downstream,multifunction video=efifb:off"
+GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on iommu=pt"
 ```
 
 #### For AMD Systems:
 ```bash
-GRUB_CMDLINE_LINUX_DEFAULT="quiet amd_iommu=on iommu=pt pcie_acs_override=downstream,multifunction video=efifb:off"
+GRUB_CMDLINE_LINUX_DEFAULT="quiet amd_iommu=on iommu=pt"
 ```
 
 **Update GRUB:** Applies the bootloader configuration changes so they take effect on next reboot.
