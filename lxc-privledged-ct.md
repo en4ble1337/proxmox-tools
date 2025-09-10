@@ -2,6 +2,8 @@
 
 This guide provides step-by-step instructions for creating and configuring a privileged LXC container on Proxmox with loop device access.
 
+A privileged LXC container runs with elevated permissions similar to the host system, bypassing many of the security isolation features that normally separate containers from the underlying hardware and kernel. Unlike unprivileged containers that map user IDs for security, privileged containers have direct access to host resources and can perform operations typically restricted to the host system. The objective of this configuration is to enable the container to access loop devices and mount disk images or ISO files, which is commonly needed for applications that require direct block device manipulation or for running nested virtualization scenarios.
+
 ## Prerequisites
 
 - Proxmox VE server with root access
