@@ -26,6 +26,30 @@ docker run -d \
   henrygd/beszel
 ```
 
+Docker-compose
+
+```bash
+# Create directory for agent configuration
+mkdir -p ~/beszel-agent
+cd ~/beszel-agent
+
+# Create docker-compose.yml file
+nano docker-compose.yml
+```
+
+```base
+services:
+  beszel:
+    image: henrygd/beszel
+    container_name: beszel
+    restart: unless-stopped
+    ports:
+      - 8090:8090
+    volumes:
+      - ./beszel_data:/beszel_data
+```
+
+
 Verify the container is running:
 ```bash
 docker ps | grep beszel
