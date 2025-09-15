@@ -265,6 +265,26 @@ EOF
 chmod +x /opt/gpu-exporter/nvidia_gpu_exporter.py
 chown -R prometheus:prometheus /opt/gpu-exporter
 ```
+>[NOTE!:] 
+> Or run official DCGM exporter
+
+```bash
+docker run -d \
+  --name nvidia-dcgm-exporter \
+  --restart unless-stopped \
+  --gpus all \
+  --cap-add SYS_ADMIN \
+  -p 9400:9400 \
+  nvcr.io/nvidia/k8s/dcgm-exporter:3.1.8-3.1.5-ubuntu20.04
+```
+Modify ``/etc/prometheus/prometheus.yml`` for 9400
+
+```
+job_name: 'nvidia-gpu'
+    static_configs:
+      - targets: ['localhost:9400']
+```
+
 
 ### 4.3 Create GPU Exporter Service
 
