@@ -11,7 +11,7 @@ A comprehensive step-by-step guide to install Beszel monitoring system on Ubuntu
 
 ## Step 1: Install Beszel Hub
 
-Install the Beszel hub using Docker with persistent storage :[1]
+Install the Beszel hub using Docker with persistent storage as docker run
 
 ```bash
 # Create Docker volume for persistent data
@@ -26,7 +26,7 @@ docker run -d \
   henrygd/beszel
 ```
 
-Docker-compose
+Install the Beszel hub using Docker-compose
 
 ```bash
 # Create directory for agent configuration
@@ -48,6 +48,8 @@ services:
     volumes:
       - ./beszel_data:/beszel_data
 ```
+Start the agent container
+```docker compose up -d```
 
 
 Verify the container is running:
