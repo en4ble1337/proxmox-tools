@@ -265,7 +265,7 @@ EOF
 chmod +x /opt/gpu-exporter/nvidia_gpu_exporter.py
 chown -R prometheus:prometheus /opt/gpu-exporter
 ```
-> [NOTE!:] 
+> [!NOTE]
 > Or run official DCGM exporter
 
 ```bash
