@@ -457,6 +457,10 @@ journalctl -u grafana-server -f
 promtool check config /etc/prometheus/prometheus.yml
 ```
 
+## Quick Dashboard GPU
+
+- https://grafana.com/grafana/dashboards/20003-nvidia-gpu/
+
 ## Access URLs
 
 - **Grafana Dashboard:** `http://your-container-ip:3000`
