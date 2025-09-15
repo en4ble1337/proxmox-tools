@@ -480,6 +480,7 @@ promtool check config /etc/prometheus/prometheus.yml
 ## Quick Dashboard GPU
 
 - https://grafana.com/grafana/dashboards/20003-nvidia-gpu/
+- https://grafana.com/grafana/dashboards/22515-nvidia-dcgm-dashboard/
 
 ## Access URLs
 
