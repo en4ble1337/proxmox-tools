@@ -69,34 +69,110 @@ Complete step-by-step guide to set up SSH key authentication for root access to 
    # Should show key fingerprint without errors
    ```
 
-## Step 3: Configure SSH Server
+## Step 3: Install and Configure SSH Server (Secure Setup)
 
-1. **Edit SSH configuration:**
+### Option A: Automated Setup (Recommended)
+
+Run this command to install SSH server and configure it securely for key-only authentication:
+
+```bash
+cat << 'EOF' | bash
+# Install and configure SSH
+apt update && apt install -y openssh-server
+systemctl enable ssh
+systemctl start ssh
+
+# Allow root login
+sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+# Enable public key authentication
+sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
+
+# Disable password authentication (key-only access)
+sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+
+# Disable empty passwords
+sed -i 's/#PermitEmptyPasswords no/PermitEmptyPasswords no/' /etc/ssh/sshd_config
+sed -i 's/PermitEmptyPasswords yes/PermitEmptyPasswords no/' /etc/ssh/sshd_config
+
+# Ensure keyboard-interactive is disabled
+sed -i 's/KbdInteractiveAuthentication yes/KbdInteractiveAuthentication no/' /etc/ssh/sshd_config
+
+# Test configuration and restart
+sshd -t && systemctl restart ssh
+
+echo "SSH configured for secure key-only authentication"
+echo "⚠️  IMPORTANT: Test your SSH key before closing this session!"
+EOF
+```
+
+### Option B: Manual Configuration
+
+1. **Install SSH server (if not already installed):**
+   ```bash
+   apt update && apt install -y openssh-server
+   systemctl enable ssh
+   systemctl start ssh
+   ```
+
+2. **Edit SSH configuration:**
    ```bash
    nano /etc/ssh/sshd_config
    ```
 
-2. **Ensure these settings are present and uncommented:**
+3. **Ensure these settings are present and uncommented:**
    ```
    PermitRootLogin yes
    PubkeyAuthentication yes
+   PasswordAuthentication no
+   PermitEmptyPasswords no
+   KbdInteractiveAuthentication no
    AuthorizedKeysFile .ssh/authorized_keys
    ```
 
-3. **Check for conflicting configurations:**
+4. **Check for conflicting configurations:**
    ```bash
    # Check if there are additional config files
    ls /etc/ssh/sshd_config.d/
    cat /etc/ssh/sshd_config.d/*
    ```
 
-4. **Restart SSH service:**
+5. **Test configuration and restart SSH service:**
    ```bash
-   systemctl restart sshd
-   systemctl status sshd
+   sshd -t && systemctl restart ssh
+   systemctl status ssh
    ```
 
-## Step 4: Test Connection with PuTTY
+### Verify Security Configuration
+
+After configuration, verify the security settings:
+
+```bash
+grep -E "PasswordAuthentication|PubkeyAuthentication|PermitEmptyPasswords|KbdInteractiveAuthentication" /etc/ssh/sshd_config
+```
+
+**Expected output:**
+```
+PasswordAuthentication no
+PermitEmptyPasswords no
+PubkeyAuthentication yes
+KbdInteractiveAuthentication no
+```
+
+## ⚠️ CRITICAL SAFETY WARNING
+
+**Before disabling password authentication, ensure your SSH key is working!**
+
+1. **Keep your current SSH session open** as a backup
+2. **Test SSH key authentication in a NEW session** before applying security settings
+3. **Only proceed if key authentication works without password**
+
+If you're locked out, you can access the container via:
+```bash
+lxc exec container-name bash
+```
 
 1. **Get your container's IP address:**
    ```bash
@@ -131,6 +207,35 @@ Complete step-by-step guide to set up SSH key authentication for root access to 
    - Click **"Open"**
    - If prompted about host key, click **"Accept"**
    - You should now be logged in as root **without entering a password**
+   - **If this works, your key authentication is successful!**
+
+## ⚠️ Security Enforcement (Apply After Testing)
+
+**Only run this AFTER confirming your SSH key works in Step 4:**
+
+If you used the automated setup in Step 3, password authentication is already disabled. If you used manual configuration or want to double-check:
+
+```bash
+# Verify security settings
+grep -E "PasswordAuthentication|PubkeyAuthentication|PermitEmptyPasswords|KbdInteractiveAuthentication" /etc/ssh/sshd_config
+
+# Expected output:
+# PasswordAuthentication no
+# PermitEmptyPasswords no  
+# PubkeyAuthentication yes
+# KbdInteractiveAuthentication no
+```
+
+If any settings are missing or incorrect, fix them:
+
+```bash
+# Apply security settings (only if needed)
+sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+sed -i 's/#PermitEmptyPasswords no/PermitEmptyPasswords no/' /etc/ssh/sshd_config
+sed -i 's/PermitEmptyPasswords yes/PermitEmptyPasswords no/' /etc/ssh/sshd_config
+sshd -t && systemctl restart ssh
+```
 
 ## Troubleshooting
 
@@ -173,15 +278,23 @@ Complete step-by-step guide to set up SSH key authentication for root access to 
 
 ## Security Considerations
 
+✅ **Current Security Features:**
+
+- **Key-only authentication:** Password login is disabled
+- **No empty passwords:** Extra protection against weak passwords  
+- **No keyboard-interactive:** Prevents bypass methods
+- **Root access controlled:** Only accessible via SSH key
+
 ⚠️ **Important Security Notes:**
 
 - This setup allows **anyone with the private key** to access your container as root
+- **Keep your private key secure** and never share it
 - For production environments, consider:
   - Using a regular user account instead of root
   - Adding a passphrase to the private key
   - Implementing IP address restrictions
   - Using certificate-based authentication
-  - Disabling password authentication entirely
+  - Setting up fail2ban for additional protection
 
 ## Alternative Key Types
 
