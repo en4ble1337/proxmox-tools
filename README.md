@@ -4,28 +4,21 @@ A comprehensive collection of scripts and configurations for optimizing Proxmox 
 
 ## 📋 Table of Contents
 
-1. [Features](#-features)
-2. [Create RAID0 Storage Pool](#-create-raid0-storage-pool)
-3. [Optimize Performance by Disabling Cluster Services](#-optimize-performance-by-disabling-cluster-services)
-4. [Disable Access Time Updates (atime)](#-disable-access-time-updates-atime)
-   - [For Non-ZFS Filesystems](#for-non-zfs-filesystems)
-   - [For ZFS Filesystems](#for-zfs-filesystems)
-5. [Proxmox VE Post-Installation Script](#️-proxmox-ve-post-installation-script)
-6. [Automated LXC Container Maintenance](#-automated-lxc-container-maintenance)
-7. [Quick Start Guide](#-quick-start-guide)
-8. [Important Notes](#️-important-notes)
-9. [Contributing](#-contributing)
-10. [License](#-license)
+## Table of Contents
 
+- [Ansible Proxmox Automation](ansible-proxmox.md)
+- [Beszel Monitor for PVE](beszel-monitor-pve.md)
+- [High-End GPU Installation Freeze Fix](install_freeze_high_end_gpu.md)
+- [LXC Privileged Container Setup](lxc-privledged-ct.md)
+- [LXC Root SSH Configuration](lxc-root-ssh.md)
+- [LXC TRIM Script](lxc-trim-prox.sh)
+- [pfSense Repository Configuration](pfsense-repo.md)
+- [Prometheus & Grafana PVE LXC](prometheus_grafana_pve_lxc.md)
+- [Proxmox 9.0 RTX 5090 Setup](proxmox-9.0-5090.md)
+- [Proxmox Diagnostics](proxmox-diagnostics.md)
+- [PVE IP Forwarding Issue](pve_ip_forwarding_issue.md)
+- [README](README.md)
 
-## 🚀 Features
-
-- **Storage Management**: Easy RAID0 setup with ZFS pools
-- **Performance Optimization**: Cluster service management and filesystem tuning
-- **System Maintenance**: Automated container cleanup and post-installation configuration
-- **Enterprise-Ready**: Scripts tested for production environments
-
----
 
 ## 📦 Create RAID0 Storage Pool
 
