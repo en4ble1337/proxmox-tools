@@ -6,8 +6,8 @@ A comprehensive guide for managing Proxmox LXC containers using Terraform on Ubu
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Proxmox API Token Setup](#proxmox-api-token-setup)
-- [Project Structure](#project-structure)
-- [Configuration Files](#configuration-files)
+- [Quick Start - Basic Setup](#quick-start---basic-setup)
+- [Advanced Setup - Using Variables](#advanced-setup---using-variables)
 - [Usage](#usage)
 - [Common Operations](#common-operations)
 - [Troubleshooting](#troubleshooting)
@@ -110,12 +110,242 @@ pveum acl modify / -token 'root@pam!terraform' -role Administrator
 
 ---
 
-## Project Structure
+## Quick Start - Basic Setup
 
-Create an organized directory structure:
+Perfect for your first container or learning Terraform basics.
+
+### Step 1: Create Project Directory
 
 ```bash
-# Create project directory
+# Create and navigate to project directory
+mkdir -p ~/terraform-projects/proxmox-basic
+cd ~/terraform-projects/proxmox-basic
+```
+
+### Step 2: Create providers.tf
+
+```bash
+nano providers.tf
+```
+
+Paste this configuration:
+
+```hcl
+terraform {
+  required_version = ">= 1.1.0"
+  required_providers {
+    proxmox = {
+      source  = "telmate/proxmox"
+      version = ">= 2.9.5"
+    }
+  }
+}
+
+provider "proxmox" {
+  pm_tls_insecure     = true
+  pm_api_url          = "https://10.1.20.136:8006/api2/json"  # Change to your Proxmox IP
+  pm_api_token_id     = "root@pam!terraform"
+  pm_api_token_secret = "your-secret-token-here"  # Replace with your token
+}
+```
+
+**Important**: 
+- Use port **8006** (not 443)
+- Replace the IP address with your Proxmox server IP
+- Replace the token secret with your actual token
+
+### Step 3: Create lxc_container.tf
+
+```bash
+nano lxc_container.tf
+```
+
+Paste this basic configuration:
+
+```hcl
+resource "proxmox_lxc" "basic-container" {
+  target_node  = "ai-node1"  # Change to your Proxmox node name
+  hostname     = "test-container-01"
+  ostemplate   = "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst"
+  password     = "rootroot"  # Change this to a secure password
+  unprivileged = true
+  
+  rootfs {
+    storage = "local-lvm"  # Change to your storage name
+    size    = "8G"
+  }
+  
+  network {
+    name   = "eth0"
+    bridge = "vmbr0"
+    ip     = "dhcp"
+    ip6    = "dhcp"
+  }
+  
+  features {
+    nesting = true
+  }
+}
+```
+
+### Step 4: Initialize and Apply
+
+```bash
+# Initialize Terraform
+terraform init
+
+# Preview what will be created
+terraform plan
+
+# Create the container
+terraform apply
+```
+
+Type `yes` when prompted.
+
+### Step 5: Verify
+
+Check in Proxmox web UI - you should see your new container!
+
+```bash
+# View container details
+terraform show
+
+# Get container ID
+terraform state list
+```
+
+---
+
+## Basic Setup - Multiple Containers
+
+To create multiple containers without variables, add more resource blocks:
+
+### lxc_container.tf (Multiple Containers)
+
+```hcl
+# First container
+resource "proxmox_lxc" "web-server" {
+  target_node  = "ai-node1"
+  hostname     = "web-server-01"
+  ostemplate   = "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst"
+  password     = "rootroot"
+  unprivileged = true
+  
+  rootfs {
+    storage = "local-lvm"
+    size    = "20G"  # Larger for web server
+  }
+  
+  network {
+    name   = "eth0"
+    bridge = "vmbr0"
+    ip     = "dhcp"
+    ip6    = "dhcp"
+  }
+  
+  features {
+    nesting = true
+  }
+}
+
+# Second container
+resource "proxmox_lxc" "db-server" {
+  target_node  = "ai-node1"
+  hostname     = "db-server-01"
+  ostemplate   = "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst"
+  password     = "rootroot"
+  unprivileged = true
+  cores        = 4  # More CPU for database
+  memory       = 4096  # More RAM for database
+  
+  rootfs {
+    storage = "local-lvm"
+    size    = "50G"  # Larger disk for database
+  }
+  
+  network {
+    name   = "eth0"
+    bridge = "vmbr0"
+    ip     = "dhcp"
+    ip6    = "dhcp"
+  }
+  
+  features {
+    nesting = true
+  }
+}
+
+# Third container
+resource "proxmox_lxc" "cache-server" {
+  target_node  = "ai-node1"
+  hostname     = "cache-server-01"
+  ostemplate   = "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst"
+  password     = "rootroot"
+  unprivileged = true
+  
+  rootfs {
+    storage = "local-lvm"
+    size    = "10G"
+  }
+  
+  network {
+    name   = "eth0"
+    bridge = "vmbr0"
+    ip     = "dhcp"
+    ip6    = "dhcp"
+  }
+  
+  features {
+    nesting = true
+  }
+}
+```
+
+Apply to create all three:
+
+```bash
+terraform plan   # Shows: 3 to add
+terraform apply  # Creates all three containers
+```
+
+### Basic Setup File Structure
+
+```
+~/terraform-projects/proxmox-basic/
+├── providers.tf          # Provider configuration
+├── lxc_container.tf      # Container definitions
+├── .terraform/           # Plugin directory (auto-created)
+├── terraform.tfstate     # Current state (auto-created)
+└── terraform.tfstate.backup
+```
+
+### When to Use Basic Setup
+
+✅ **Use basic setup when:**
+- Learning Terraform
+- Creating 1-3 containers
+- Quick testing/prototyping
+- Simple, one-off deployments
+- Each container is very different
+
+❌ **Avoid basic setup when:**
+- Managing 5+ containers
+- Containers have similar configurations
+- Need to manage multiple environments (dev/prod)
+- Working in a team
+- Want easier updates to multiple containers
+
+---
+
+## Advanced Setup - Using Variables
+
+Better for managing multiple containers and reusable configurations.
+
+### Project Structure
+
+```bash
+# Create organized structure
 mkdir -p ~/terraform-projects/proxmox-lxc/{plans,backups}
 cd ~/terraform-projects/proxmox-lxc
 
@@ -123,7 +353,7 @@ cd ~/terraform-projects/proxmox-lxc
 git init
 ```
 
-### Recommended File Structure
+### Complete File Structure
 
 ```
 ~/terraform-projects/proxmox-lxc/
@@ -181,13 +411,9 @@ backups/*.backup
 EOF
 ```
 
----
+### Configuration Files
 
-## Configuration Files
-
-### 1. providers.tf
-
-Provider configuration for Proxmox connection.
+#### 1. providers.tf
 
 ```hcl
 terraform {
@@ -208,12 +434,6 @@ provider "proxmox" {
 }
 ```
 
-**Important Notes:**
-- Default Proxmox API port is **8006**, not 443
-- Replace IP address with your Proxmox server IP
-- Replace token secret with your actual token
-- For production, use environment variables instead of hardcoding secrets
-
 **Using Environment Variables (Recommended for Production):**
 
 ```bash
@@ -229,9 +449,7 @@ provider "proxmox" {
 }
 ```
 
-### 2. variables.tf
-
-Variable definitions with default values.
+#### 2. variables.tf
 
 ```hcl
 variable "containers" {
@@ -312,9 +530,7 @@ variable "ssh_public_keys" {
 }
 ```
 
-### 3. lxc_containers.tf
-
-Resource definitions using variables.
+#### 3. lxc_containers.tf
 
 ```hcl
 resource "proxmox_lxc" "containers" {
@@ -366,9 +582,7 @@ resource "proxmox_lxc" "containers" {
 }
 ```
 
-### 4. outputs.tf (Optional)
-
-Display useful information after creation.
+#### 4. outputs.tf (Optional)
 
 ```hcl
 output "container_info" {
@@ -391,9 +605,7 @@ output "container_ids" {
 }
 ```
 
-### 5. terraform.tfvars (Optional)
-
-Override default values without modifying variables.tf.
+#### 5. terraform.tfvars (Optional)
 
 **⚠️ NEVER commit this file to git (contains secrets)**
 
@@ -486,13 +698,16 @@ terraform destroy
 
 # Destroy specific resource
 terraform destroy -target='proxmox_lxc.containers["web-server"]'
+
+# For basic setup (without variables):
+terraform destroy -target='proxmox_lxc.basic-container'
 ```
 
 ---
 
 ## Common Operations
 
-### Add a New Container
+### Add a New Container (Variables Method)
 
 Edit `variables.tf` and add to the `containers` map:
 
@@ -518,24 +733,55 @@ terraform plan   # Shows: 1 to add
 terraform apply  # Creates the new container
 ```
 
+### Add a New Container (Basic Method)
+
+Edit `lxc_container.tf` and add a new resource block:
+
+```hcl
+resource "proxmox_lxc" "new-container" {
+  target_node  = "ai-node1"
+  hostname     = "new-container-01"
+  ostemplate   = "local:vztmpl/ubuntu-22.04-standard_22.04-1_amd64.tar.zst"
+  password     = "rootroot"
+  unprivileged = true
+  
+  rootfs {
+    storage = "local-lvm"
+    size    = "8G"
+  }
+  
+  network {
+    name   = "eth0"
+    bridge = "vmbr0"
+    ip     = "dhcp"
+    ip6    = "dhcp"
+  }
+  
+  features {
+    nesting = true
+  }
+}
+```
+
 ### Remove a Container
 
-Remove the container definition from `variables.tf` and apply:
+**Variables method**: Remove from `variables.tf` and apply
 
-```bash
-terraform plan   # Shows: 1 to destroy
-terraform apply  # Removes the container
-```
+**Basic method**: Delete the resource block from `lxc_container.tf` and apply
 
 Or use targeted destroy:
 
 ```bash
+# Variables method
 terraform destroy -target='proxmox_lxc.containers["app-server"]'
+
+# Basic method
+terraform destroy -target='proxmox_lxc.new-container'
 ```
 
 ### Modify Container Resources
 
-Edit the container definition in `variables.tf`:
+**Variables method**: Edit in `variables.tf`:
 
 ```hcl
 web-server = {
@@ -547,6 +793,18 @@ web-server = {
 }
 ```
 
+**Basic method**: Edit the resource block directly:
+
+```hcl
+resource "proxmox_lxc" "web-server" {
+  target_node  = "ai-node1"
+  hostname     = "web-server-01"
+  cores        = 4      # Changed from 2
+  memory       = 4096   # Changed from 2048
+  # ... rest of config
+}
+```
+
 **Note**: Some changes require container recreation (hostname, disk size). Check plan carefully.
 
 ### View Current State
@@ -555,8 +813,11 @@ web-server = {
 # List all managed resources
 terraform state list
 
-# Show details of specific resource
+# Show details of specific resource (variables method)
 terraform state show 'proxmox_lxc.containers["web-server"]'
+
+# Show details of specific resource (basic method)
+terraform state show 'proxmox_lxc.web-server'
 
 # Show all outputs
 terraform output
@@ -569,13 +830,16 @@ terraform output container_ids
 
 If you have an existing container not managed by Terraform:
 
+**Variables method**:
 ```bash
-# Add definition to variables.tf first
-# Then import it
-terraform import 'proxmox_lxc.containers["existing"]' node-name/lxc/vmid
-
-# Example:
+# Add definition to variables.tf first, then:
 terraform import 'proxmox_lxc.containers["existing"]' ai-node1/lxc/100
+```
+
+**Basic method**:
+```bash
+# Add resource block to lxc_container.tf first, then:
+terraform import 'proxmox_lxc.existing-container' ai-node1/lxc/100
 ```
 
 ### Backup State File
@@ -657,7 +921,7 @@ Error: storage 'local-lvm' does not exist
 # List available storage
 pvesh get /storage
 
-# Use correct storage name in variables.tf
+# Use correct storage name in your configuration
 storage = "local-lvm"  # or "local" or your custom storage
 ```
 
@@ -669,7 +933,7 @@ Error: VM 101 already exists
 ```
 
 **Solution:**
-- Change VMID in `variables.tf`
+- Change VMID in your configuration
 - Or remove existing container in Proxmox
 - Or import existing container into Terraform state
 
@@ -685,8 +949,26 @@ Error: bridge 'vmbr0' does not exist
 # Check available bridges on Proxmox
 ip link show | grep vmbr
 
-# Update variables.tf with correct bridge
+# Update your configuration with correct bridge
 bridge = "vmbr0"  # or vmbr1, vmbr2, etc.
+```
+
+#### 7. Resource Already Exists in State
+
+**Error:**
+```
+Error: Resource already exists in state
+```
+
+**Solution:**
+```bash
+# Remove from state (doesn't destroy the container)
+terraform state rm 'proxmox_lxc.containers["web-server"]'
+
+# Or for basic setup:
+terraform state rm 'proxmox_lxc.web-server'
+
+# Then import or recreate
 ```
 
 ### Enable Debug Logging
@@ -882,78 +1164,30 @@ terraform plan
 
 ---
 
-## References
+## Comparison: Basic vs Variables Setup
 
-- **Terraform Proxmox Provider**: https://github.com/Telmate/terraform-provider-proxmox
-- **Provider Documentation**: https://registry.terraform.io/providers/Telmate/proxmox/latest/docs
-- **Terraform Documentation**: https://www.terraform.io/docs
-- **Proxmox VE Documentation**: https://pve.proxmox.com/pve-docs/
-- **Terraform Best Practices**: https://www.terraform.io/docs/cloud/guides/recommended-practices/index.html
+| Feature | Basic Setup | Variables Setup |
+|---------|-------------|-----------------|
+| **Complexity** | ⭐ Simple | ⭐⭐⭐ Moderate |
+| **Best for** | 1-3 containers | 5+ containers |
+| **Reusability** | Low | High |
+| **Maintenance** | Copy-paste changes | Change one place |
+| **Learning curve** | Easy | Moderate |
+| **Scalability** | Poor | Excellent |
+| **Team work** | Basic | Good |
+| **Configuration drift** | Higher risk | Lower risk |
 
----
+### When to Use Each
 
-## Quick Reference Commands
+**Use Basic Setup when:**
+- ✅ Learning Terraform basics
+- ✅ Creating your first container
+- ✅ Quick testing or proof of concept
+- ✅ Managing 1-3 very different containers
+- ✅ Simple, one-time deployment
 
-```bash
-# Installation
-sudo apt-get install terraform
-
-# Initialize project
-terraform init
-
-# Validate configuration
-terraform validate
-
-# Format files
-terraform fmt
-
-# Plan changes
-terraform plan
-terraform plan -out=tfplan
-
-# Apply changes
-terraform apply
-terraform apply tfplan
-terraform apply -auto-approve
-
-# Destroy resources
-terraform destroy
-terraform destroy -target='resource.name'
-
-# State management
-terraform state list
-terraform state show 'resource.name'
-terraform state rm 'resource.name'
-
-# Outputs
-terraform output
-terraform output output_name
-
-# Import existing resource
-terraform import 'resource.name' node/type/vmid
-
-# Refresh state
-terraform refresh
-
-# Show current state
-terraform show
-
-# Debug
-export TF_LOG=DEBUG
-terraform plan
-```
-
----
-
-## License
-
-This guide is provided as-is for educational purposes.
-
-## Contributing
-
-Feel free to submit issues and enhancement requests!
-
----
-
-**Created**: 2025
-**Last Updated**: 2025-10-16
+**Use Variables Setup when:**
+- ✅ Managing 5+ containers
+- ✅ Containers share similar configurations
+- ✅ Need to manage multiple environments (dev/staging/prod)
+- ✅ Working in a team
