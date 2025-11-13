@@ -4,21 +4,41 @@ A comprehensive collection of scripts and configurations for optimizing Proxmox 
 
 ## 📋 Table of Contents
 
-## Table of Contents
+### Proxmox Configuration & Setup
+- [Proxmox 9.0 RTX 5090 Setup](proxmox-9.0-5090.md) - Installation and configuration guide for NVIDIA RTX 5090 on Proxmox 9.0
+- [High-End GPU Installation Freeze Fix](install_freeze_high_end_gpu.md) - Troubleshooting installation freezes with high-end GPUs
+- [PVE IP Forwarding Issue](pve_ip_forwarding_issue.md) - Resolve IP forwarding problems in Proxmox VE
+- [Proxmox Diagnostics](proxmox-diagnostics.md) - Diagnostic tools and troubleshooting for Proxmox VE
+- [Proxmox VE Post-Installation Script](#️-proxmox-ve-post-installation-script) - Automated post-installation configuration
 
-- [Ansible Proxmox Automation](ansible-proxmox.md)
-- [Beszel Monitor for PVE](beszel-monitor-pve.md)
-- [High-End GPU Installation Freeze Fix](install_freeze_high_end_gpu.md)
-- [LXC Privileged Container Setup](lxc-privledged-ct.md)
-- [LXC Root SSH Configuration](lxc-root-ssh.md)
-- [LXC TRIM Script](lxc-trim-prox.sh)
-- [pfSense Repository Configuration](pfsense-repo.md)
-- [Prometheus & Grafana PVE LXC](prometheus_grafana_pve_lxc.md)
-- [Proxmox 9.0 RTX 5090 Setup](proxmox-9.0-5090.md)
-- [Proxmox Diagnostics](proxmox-diagnostics.md)
-- [PVE IP Forwarding Issue](pve_ip_forwarding_issue.md)
-- [README](README.md)
+### Storage & Backup
+- [Add USB Backup Storage](add-usb-backup-storage.md) - Configure USB drives as backup storage in Proxmox
+- [LXC TRIM Script](lxc-trim-prox.sh) - Script to run TRIM operations on LXC containers
+- [Create RAID0 Storage Pool](#-create-raid0-storage-pool) - Set up ZFS RAID0 for improved performance
+- [Automated LXC Container Maintenance](#-automated-lxc-container-maintenance) - Weekly TRIM operations for LXC containers
 
+### LXC Container Management
+- [LXC Privileged Container Setup](lxc-privledged-ct.md) - Create and configure privileged LXC containers
+- [LXC Root SSH Configuration](lxc-root-ssh.md) - Enable root SSH access in LXC containers
+- [SSH Key LXC](ssh-key-lxc.md) - Configure SSH key authentication for LXC containers
+
+### Monitoring & Observability
+- [Beszel Monitor for PVE](beszel-monitor-pve.md) - Deploy Beszel monitoring for Proxmox VE
+- [Prometheus & Grafana PVE LXC](prometheus_grafana_pve_lxc.md) - Setup Prometheus and Grafana monitoring in LXC containers
+- [Smokeping Grafana LXC](smokeping-grafana-lxc.md) - Deploy Smokeping with Grafana for network latency monitoring in LXC
+
+### Automation & Infrastructure as Code
+- [Ansible Proxmox Automation](ansible-proxmox.md) - Automate Proxmox management with Ansible
+- [Terraform PVE](terraform-pve.md) - Infrastructure as code for Proxmox using Terraform
+
+### Networking
+- [pfSense Repository Configuration](pfsense-repo.md) - Configure pfSense repository for Proxmox integration
+
+### Performance Optimization
+- [Optimize Performance by Disabling Cluster Services](#-optimize-performance-by-disabling-cluster-services) - Reduce resource usage on single-node installations
+- [Disable Access Time Updates (atime)](#-disable-access-time-updates-atime) - Improve filesystem performance and reduce wear
+
+---
 
 ## 📦 Create RAID0 Storage Pool
 
@@ -194,4 +214,3 @@ Feel free to submit issues, fork the repository, and create pull requests for an
 ## 📄 License
 
 This project is open source and available under standard open source licensing terms.
-
