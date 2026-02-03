@@ -102,7 +102,7 @@ c1:00.1 Audio device [0403]: NVIDIA Corporation Device [10de:22e8] (rev a1)
 
 Note your PCI IDs (10de:2b85 and 10de:22e8 in this example).
 
-### 5. Configure VFIO Device Binding
+### 5. Configure VFIO Device Binding - ONLY to used with VM - LXC do not configure.
 Tells the VFIO driver to claim ownership of your specific GPU hardware instead of the default graphics drivers.
 
 ```bash
