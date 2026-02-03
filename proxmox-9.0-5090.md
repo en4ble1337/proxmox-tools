@@ -112,13 +112,17 @@ echo "options vfio-pci ids=10de:2b85,10de:22e8" > /etc/modprobe.d/vfio.conf
 > **📝 Note**: Replace `10de:2b85,10de:22e8` with your actual RTX 5090 PCI IDs
 
 ### 6. Blacklist GPU Drivers
-Prevents the host system from loading GPU drivers that would conflict with VFIO passthrough.
+Prevents the host system from loading GPU drivers that would conflict with VFIO passthrough. VM only.
 
 ```bash
 echo "blacklist nouveau" >> /etc/modprobe.d/blacklist.conf
 echo "blacklist nvidia" >> /etc/modprobe.d/blacklist.conf
 echo "blacklist nvidia_drm" >> /etc/modprobe.d/blacklist.conf
 echo "blacklist nvidia_modeset" >> /etc/modprobe.d/blacklist.conf
+```
+LXC
+```bash
+echo "blacklist nouveau" >> /etc/modprobe.d/blacklist.conf
 ```
 
 ### 7. Additional VFIO Options (For Stability)
