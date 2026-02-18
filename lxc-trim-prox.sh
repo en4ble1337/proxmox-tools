@@ -1,25 +1,53 @@
-### Chanisavvy Trim Proxmox host volumes and all LXCs on node script ###
-# Run as weekly cron job
-# !/bin/bash
+#!/bin/bash
+### ChainSavvy Trim Proxmox host volumes and all LXCs on node script ###
+# Run as weekly cron job: 0 0 * * 3 /root/lxc-trim-prox.sh
 
-# Path to FSTRIM
+LOGFILE="/var/log/lxc-trim.log"
 FSTRIM=/sbin/fstrim
-
-# List of host volumes to trim separated by spaces
-# eg TRIMVOLS="/mnt/a /mnt/b /mnt/c"
 TRIMVOLS="/"
 
+log() {
+  echo "$(date '+%Y-%m-%d %H:%M:%S') $1" | tee -a "$LOGFILE"
+}
+
+log "========================================="
+log "TRIM JOB STARTED"
+log "========================================="
+
 ## Trim all LXC containers ##
-echo "LXC CONTAINERS"
+log "--- LXC CONTAINERS ---"
+FAIL_COUNT=0
+SUCCESS_COUNT=0
+
 for i in $(/sbin/pct list | awk '/^[0-9]/ {print $1}'); do
-  echo "Trimming Container $i"
-  /sbin/pct fstrim $i 2>&1 | logger -t "pct fstrim [$$]"
+  STATUS=$(/sbin/pct status "$i" 2>/dev/null | awk '{print $2}')
+  if [ "$STATUS" = "running" ]; then
+    OUTPUT=$(/sbin/pct fstrim "$i" 2>&1)
+    if [ $? -eq 0 ]; then
+      log "  Container $i: OK | $OUTPUT"
+      SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+    else
+      log "  Container $i: FAILED | $OUTPUT"
+      FAIL_COUNT=$((FAIL_COUNT + 1))
+    fi
+  else
+    log "  Container $i: SKIPPED (status: ${STATUS:-unknown})"
+  fi
 done
-echo ""
 
 ## Trim host volumes ##
-echo "HOST VOLUMES"
+log "--- HOST VOLUMES ---"
 for i in $TRIMVOLS; do
-  echo "Trimming $i"
-  $FSTRIM -v $i 2>&1 | logger -t "fstrim [$$]"
+  OUTPUT=$($FSTRIM -v "$i" 2>&1)
+  if [ $? -eq 0 ]; then
+    log "  $i: OK | $OUTPUT"
+  else
+    log "  $i: FAILED | $OUTPUT"
+    FAIL_COUNT=$((FAIL_COUNT + 1))
+  fi
 done
+
+log "--- SUMMARY ---"
+log "  Successful: $SUCCESS_COUNT | Failed: $FAIL_COUNT"
+log "TRIM JOB COMPLETED"
+log ""
