@@ -168,29 +168,63 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/Proxmo
 
 ## 🧹 Automated LXC Container Maintenance
 
-The TRIM feature enables efficient storage management by informing the underlying storage system which data blocks are no longer needed. This automated solution runs weekly to optimize LXC container storage.
 
-**Key Benefits:**  
-- Automatic reclamation of unused storage space
-- Improved SSD performance and longevity
-- Reduced storage fragmentation
-- Zero-maintenance operation once configured
+Automated TRIM/discard script for Proxmox hosts. Trims all running LXC containers and host volumes, skips stopped containers, and logs results with timestamps.
 
-**Install and configure the automated TRIM cronjob:**
-```
-wget https://raw.githubusercontent.com/en4ble1337/proxmox-tools/main/lxc-trim-prox.sh && chmod 777 lxc-trim-prox.sh && (crontab -l ; echo "0 0 * * 3 /root/lxc-trim-prox.sh") | crontab -
+### Quick Install (single command)
+
+```bash
+wget -O /root/lxc-trim-prox.sh "https://raw.githubusercontent.com/en4ble1337/proxmox-tools/main/lxc-trim-prox.sh" && chmod +x /root/lxc-trim-prox.sh && (crontab -l | grep -v 'lxc-trim-prox' ; echo "0 0 * * 3 /root/lxc-trim-prox.sh") | crontab - && crontab -l
 ```
 
-**Verify the cronjob installation:**
+### Manual Install
+
+**1. Download the script**
+
+```bash
+wget -O /root/lxc-trim-prox.sh "https://raw.githubusercontent.com/en4ble1337/proxmox-tools/main/lxc-trim-prox.sh"
 ```
+
+**2. Make it executable**
+
+```bash
+chmod +x /root/lxc-trim-prox.sh
+```
+
+**3. Add weekly cron job (runs every Wednesday at midnight)**
+
+```bash
+(crontab -l | grep -v 'lxc-trim-prox' ; echo "0 0 * * 3 /root/lxc-trim-prox.sh") | crontab -
+```
+
+**4. Verify crontab**
+
+```bash
 crontab -l
 ```
 
-**Remove the cronjob if needed:**
+### Logs
+
+Trim results are logged to `/var/log/lxc-trim.log`. Optional logrotate config:
+
+Create `/etc/logrotate.d/lxc-trim`:
+
 ```
-crontab -l | grep -v "/pathTo/File/lxc-trim-prox.sh" | crontab -
+/var/log/lxc-trim.log {
+    monthly
+    rotate 6
+    compress
+    missingok
+    notifempty
+}
 ```
 
+### Test Run
+
+```bash
+/root/lxc-trim-prox.sh
+cat /var/log/lxc-trim.log
+```
 ---
 
 ## 📋 Quick Start Guide
